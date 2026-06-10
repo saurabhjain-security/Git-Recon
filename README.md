@@ -228,13 +228,13 @@ python gitrecon.py
 │  3  ✅  GitHub identity verified and scopes checked             │
 │  4  📊  Rate limit pre-flight check displayed                   │
 │  5  🏢  All organisations auto-discovered via /user/orgs        │
-│                                                                 │
+│                                                                 │   
 │  6  🔁  For each organisation:                                  │
 │         👤  All members fetched with full profile               │
 │         📦  Member personal repos fetched in parallel           │
 │         🏢  All org repos fetched (public + private)            │
 │         🌿  Stale branches checked concurrently per repo        │
-│         🔐  Security audit runs 9 checks per org               │
+│         🔐  Security audit runs 9 checks per org                │
 │                                                                 │
 │  7  🌈  Colour-coded security findings table printed            │
 │  8  💾  Excel / CSV / JSON report written to disk               │
@@ -250,8 +250,8 @@ python gitrecon.py
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║   GIT RECON   v4.0   |   GitHub Org Security & Repo Analyser        ║
-║               Author: Saurabh Jain                                  ║
+║   GIT RECON   v4.0   |   GitHub Org Security & Repo Analyser         ║
+║               Author: Saurabh Jain                                   ║
 ╚══════════════════════════════════════════════════════════════════════╝
 
   ✓  Authenticated as saurabh-jain  (Saurabh Jain)
@@ -269,13 +269,13 @@ python gitrecon.py
   ✓  Security audit — 12 finding(s)  (2 Critical  4 High)
 
 ╭────────────────────────── Security Findings — acme-corp ─────────────╮
-│  #  │ Repo                │ Check                   │ Severity │      │
-├─────┼─────────────────────┼─────────────────────────┼──────────┤      │
-│  1  │ — org-level         │ Member without 2FA      │ Critical │      │
-│  2  │ api-service         │ No Branch Protection    │ High     │      │
-│  3  │ infra-scripts       │ Potentially Sensitive   │ Medium   │      │
-│  4  │ legacy-app          │ No Description          │ Low      │      │
-╰─────────────────────────────────────────────────────────────────────╯
+│  #  │ Repo                │ Check                   │ Severity │     │
+├─────┼─────────────────────┼─────────────────────────┼──────────┤     │
+│  1  │ — org-level         │ Member without 2FA      │ Critical │     │
+│  2  │ api-service         │ No Branch Protection    │ High     │     │
+│  3  │ infra-scripts       │ Potentially Sensitive   │ Medium   │     │
+│  4  │ legacy-app          │ No Description          │ Low      │     │
+╰─────────────────────────────────────────────────────────────────────-╯
 
 ──────────────────── Recon Summary ─────────────────────────────────────
 
@@ -287,8 +287,8 @@ python gitrecon.py
   └──────────────────┴─────────┴──────────────┴───────────┴───────────┴──────────┘
 
 ╔══════════════════════════════════════════════════════════════════════╗
-║  ✓ Complete  ·  Orgs: 2  ·  Members: 35  ·  Findings: 18           ║
-║  Member Repos: 251  ·  Org Repos: 50  ·  Runtime: 2m 14s           ║
+║  ✓ Complete  ·  Orgs: 2  ·  Members: 35  ·  Findings: 18             ║
+║  Member Repos: 251  ·  Org Repos: 50  ·  Runtime: 2m 14s             ║
 ╚══════════════════════════════════════════════════════════════════════╝
 
   ✓  Report → github_recon_out/github_recon_2025-06-01T14-30.xlsx
