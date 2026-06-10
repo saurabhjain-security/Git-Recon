@@ -1,408 +1,424 @@
-# GitRecon
+<div align="center">
 
-**GitHub Organisation Member & Security Reconnaissance Tool**
-
-> Enumerate every member, map every repository, surface every stale branch,
-> and run a full security audit — all from a single command.
-
----
-
-## Table of Contents
-
-- [Overview](#overview)
-- [What It Does](#what-it-does)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Authentication](#authentication)
-- [Quick Start](#quick-start)
-- [All CLI Flags](#all-cli-flags)
-- [Features in Detail](#features-in-detail)
-  - [Organisation Member Enumeration](#organisation-member-enumeration)
-  - [Member Personal Repos](#member-personal-repos)
-  - [Organisation Repos](#organisation-repos)
-  - [Stale Branch Detection](#stale-branch-detection)
-  - [Security Audit](#security-audit)
-  - [No-Args Auto Mode](#no-args-auto-mode)
-- [Output and Exports](#output-and-exports)
-  - [Excel Report](#excel-report)
-  - [CSV Export](#csv-export)
-  - [JSON Export](#json-export)
-- [Token Scopes Reference](#token-scopes-reference)
-- [Usage Examples](#usage-examples)
-- [Performance](#performance)
-- [Troubleshooting](#troubleshooting)
-
----
-
-## Overview
-
-**GitRecon v4.0** is a Python command-line tool for security teams, engineering managers, and DevSecOps engineers who need a clear picture of their GitHub organisation's members, repositories, and security posture.
-
-Run it with no arguments and it automatically discovers every organisation your GitHub account belongs to, audits all of them, and produces a colour-coded terminal report plus a styled Excel workbook — no configuration needed.
+# 🔍 GitRecon
 
 ```
-Author  : Saurabh Jain
-Version : 4.0
+  ██████╗ ██╗████████╗    ██████╗ ███████╗ ██████╗ ██████╗ ███╗   ██╗
+  ██╔════╝██║╚══██╔══╝    ██╔══██╗██╔════╝██╔════╝██╔═══██╗████╗  ██║
+  ██║  ███╗██║   ██║      ██████╔╝█████╗  ██║     ██║   ██║██╔██╗ ██║
+  ██║   ██║██║   ██║      ██╔══██╗██╔══╝  ██║     ██║   ██║██║╚██╗██║
+  ╚██████╔╝██║   ██║      ██║  ██║███████╗╚██████╗╚██████╔╝██║ ╚████║
+   ╚═════╝ ╚═╝   ╚═╝      ╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝
 ```
 
----
+### **GitHub Organisation Member & Security Reconnaissance Tool**
+*Enumerate every member, map every repository, detect stale branches, and run a full security audit — all from one command.*
 
-## What It Does
+<br>
 
-GitRecon performs five tasks per organisation, in order:
+![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![GitHub CLI](https://img.shields.io/badge/GitHub_CLI-Supported-181717?style=for-the-badge&logo=github&logoColor=white)
+![Rich](https://img.shields.io/badge/Rich-Terminal_UI-7B2FBE?style=for-the-badge)
+![Excel](https://img.shields.io/badge/Excel-Export-217346?style=for-the-badge&logo=microsoft-excel&logoColor=white)
+![JSON](https://img.shields.io/badge/JSON-Export-F7DF1E?style=for-the-badge&logo=json&logoColor=black)
+![Version](https://img.shields.io/badge/Version-4.0-00C853?style=for-the-badge)
+![Author](https://img.shields.io/badge/Author-Saurabh_Jain-FF6D00?style=for-the-badge)
 
-| Step | What happens |
-|------|-------------|
-| **1. Members** | Lists every admin and regular member with full profile data (email, company, location, follower count, join date) |
-| **2. Member Repos** | Enumerates all public repositories personally owned by each member (concurrently) |
-| **3. Org Repos** | Lists every repository — public and private — owned by the organisation itself |
-| **4. Stale Branches** | Checks every branch across every org repo and flags any with no commit for more than `--stale-days` days (default 180) |
-| **5. Security Audit** | Runs 9 security checks against members and org repos; findings are colour-coded by severity and written to the Security Audit sheet |
+<br>
 
-All data is deduplicated across multiple orgs and exported to a single styled Excel workbook (or CSV / JSON).
-
----
-
-## Prerequisites
-
-- Python **3.9** or newer
-- A GitHub account with access to the target organisation(s)
-- Either the **GitHub CLI** (`gh`) installed and authenticated, or a **Personal Access Token** set as an environment variable
+</div>
 
 ---
 
-## Installation
+## ✨ What is this?
 
-**1. Clone or download the script**
+> **GitRecon** is a single-command Python CLI tool that connects to GitHub, auto-discovers every organisation you belong to, and gives you a complete security and activity picture — members, repos, stale branches, and 9 security checks — all in one run.
+>
+> Results are printed as a colour-coded Rich terminal table and exported to a fully styled Excel workbook with 6 sheets.
+>
+> No config files. No tokens to paste. Just:
 
 ```bash
-git clone https://github.com/your-repo/gitrecon.git
-cd gitrecon
-```
-
-**2. Install dependencies**
-
-```bash
-pip install -r requirements.txt
-```
-
-The `requirements.txt` contains:
-
-```
-requests>=2.31.0
-pandas>=2.0.0
-openpyxl>=3.1.0
-rich>=13.7.0
-```
-
-**3. Verify the install**
-
-```bash
-python gitrecon.py --version
-# GitRecon v4.0
+python gitrecon.py
 ```
 
 ---
 
-## Authentication
+## 🚀 Capabilities
 
-GitRecon resolves your GitHub token in this order — the first one found wins:
+<table>
+<tr>
+<td width="50%">
 
-### Option 1 — Environment variable (recommended for CI/CD)
+### 🔎 Member Intelligence
+- 👤 **Full member profiles** — name, email, company, location
+- 🛡️ **Role detection** — admin vs regular member
+- 📦 **Personal repos** — all public repos per member
+- ⚡ **Concurrent fetch** — all members queried in parallel
+- 🔗 **Profile caching** — no duplicate API calls across orgs
 
+</td>
+<td width="50%">
+
+### 🏢 Organisation Repos
+- 🔓 **Public + Private** repos enumerated
+- 🌿 **Default branch** name captured per repo
+- ⭐ **Stars, forks, open issues** — all included
+- 🏷️ **Topics** captured for every repo
+- 📁 **Archived flag** tracked and colour-coded
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### 🌿 Stale Branch Detection
+- ⏰ **180-day default** threshold (configurable)
+- 🔴 **Red** for branches dead > 365 days
+- 🟡 **Amber** for branches dead 181–365 days
+- 👤 **Last author** and commit SHA captured
+- ⚡ **Concurrent** — all repos checked in parallel
+
+</td>
+<td width="50%">
+
+### 🔐 Security Audit
+- 🚨 **9 security checks** per organisation
+- 🔑 **2FA detection** for every member
+- 🛡️ **Branch protection** status per repo
+- 🤖 **Dependabot alerts** enabled / disabled
+- 📊 **Findings sorted** Critical → High → Medium → Low
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### 🎨 Terminal UI
+- 🎭 **ASCII art banner** with version and author
+- 📊 **Live progress bar** with repo names scrolling
+- 🌈 **Colour-coded findings** table per org
+- 🃏 **Recon summary** table across all orgs
+- ⏱️ **Runtime tracking** in the final panel
+
+</td>
+<td width="50%">
+
+### 💾 Export
+- 📄 **Excel workbook** — 6 styled sheets, freeze panes, auto-filter
+- 📊 **CSV** — 6 separate files, one per sheet
+- 🔷 **JSON** — single file, all data sets as top-level keys
+- 🕐 **Timestamped filenames** — never overwrites
+- 🎨 **Colour-coded rows** by severity / staleness in Excel
+
+</td>
+</tr>
+</table>
+
+---
+
+## 📋 Requirements
+
+| | Requirement | Version | Notes |
+|---|---|---|---|
+| 🐍 | Python | 3.9+ | [python.org](https://python.org) |
+| 🐙 | GitHub CLI (`gh`) | Any | Only needed if not using `GITHUB_TOKEN` env var |
+| 🌐 | Internet access | — | Reaches `api.github.com` |
+| 🏢 | GitHub Org membership | At least one | Required for member and repo enumeration |
+
+---
+
+## ⚙️ Installation
+
+### 1️⃣ Install GitHub CLI *(skip if using a token env var)*
+
+```bash
+# 🍎 macOS
+brew install gh
+
+# 🐧 Ubuntu / Debian
+sudo apt install gh
+
+# 🪟 Windows
+winget install --id GitHub.cli
+```
+
+```bash
+gh --version   # verify it's working
+```
+
+---
+
+### 2️⃣ Authenticate
+
+**Option A — GitHub CLI (recommended for local use)**
+```bash
+gh auth login
+```
+> 💡 Select: **GitHub.com → HTTPS → Login with a web browser**
+
+**Option B — Environment variable (recommended for CI/CD)**
 ```bash
 export GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxx
 # or
 export GH_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxx
 ```
 
-### Option 2 — GitHub CLI (recommended for local use)
-
-```bash
-# Install from https://cli.github.com
-gh auth login
-```
-
-GitRecon will automatically call `gh auth token` to retrieve your token.
-
-### Refreshing scopes
-
-For the full feature set, your token needs specific scopes:
-
+For full features, refresh your token scopes:
 ```bash
 gh auth refresh -s read:org,admin:org,security_events
 ```
 
-See [Token Scopes Reference](#token-scopes-reference) for exactly which scope unlocks which feature.
-
 ---
 
-## Quick Start
+### 3️⃣ Get the script
 
 ```bash
-# Scan all orgs your account belongs to (auto mode — runs full security audit)
-python gitrecon.py
+# Clone the repo
+git clone https://github.com/your-username/gitrecon.git
+cd gitrecon
 
-# Scan a specific org
-python gitrecon.py --orgs acme-corp
-
-# Scan two orgs and include the security audit
-python gitrecon.py --orgs acme-corp devops-team --security
-
-# Members only — skip all repo and branch enumeration
-python gitrecon.py --orgs acme-corp --members-only
-
-# Output as JSON instead of Excel
-python gitrecon.py --orgs acme-corp --output-format json
+# Or download just the file
+curl -O https://raw.githubusercontent.com/your-username/gitrecon/main/gitrecon.py
 ```
 
 ---
 
-## All CLI Flags
+### 4️⃣ Install Python dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## 📦 requirements.txt
+
+```text
+# ┌─────────────────────────────────────────────────┐
+# │       GitRecon — Python Dependencies            │
+# │       pip install -r requirements.txt           │
+# └─────────────────────────────────────────────────┘
+
+rich>=13.7.0       # 🎨 Terminal UI — tables, panels, progress, colours
+requests>=2.31.0   # 🌐 GitHub REST API v3 calls
+pandas>=2.0.0      # 📊 DataFrame building and Excel / CSV export
+openpyxl>=3.1.0    # 📄 Excel .xlsx writer engine (used by pandas)
+```
+
+---
+
+## ▶️ How to Run
+
+```bash
+python gitrecon.py
+```
+
+> ✅ **No arguments needed.** GitRecon auto-discovers your orgs and runs a full security audit automatically.
+
+---
+
+### 🔄 What happens step by step
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│  1  🎨  ASCII art banner printed  (v4.0 · Saurabh Jain)         │
+│  2  🔑  Token resolved — env var first, gh CLI fallback         │
+│  3  ✅  GitHub identity verified and scopes checked             │
+│  4  📊  Rate limit pre-flight check displayed                   │
+│  5  🏢  All organisations auto-discovered via /user/orgs        │
+│                                                                 │
+│  6  🔁  For each organisation:                                  │
+│         👤  All members fetched with full profile               │
+│         📦  Member personal repos fetched in parallel           │
+│         🏢  All org repos fetched (public + private)            │
+│         🌿  Stale branches checked concurrently per repo        │
+│         🔐  Security audit runs 9 checks per org               │
+│                                                                 │
+│  7  🌈  Colour-coded security findings table printed            │
+│  8  💾  Excel / CSV / JSON report written to disk               │
+│  9  📊  Recon summary table across all orgs printed             │
+│  10 🃏  Final panel with totals and runtime displayed           │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### 🖥️ Terminal Output Preview
+
+```
+╔══════════════════════════════════════════════════════════════════════╗
+║   GIT RECON   v4.0   |   GitHub Org Security & Repo Analyser        ║
+║               Author: Saurabh Jain                                  ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+  ✓  Authenticated as saurabh-jain  (Saurabh Jain)
+  ✓  Rate limit: 4,982 / 5,000 remaining  (resets at 15:30:00)
+  ✓  Auto-discovered 2 org(s):  acme-corp, devops-team
+
+──────────────────── acme-corp ─────────────────────────────────────────
+
+  ✓  Members — 24 found  (3 admins · 21 members)
+  ⠋  acme-corp — api-service  ████████████░░░░  14/24  00:43
+
+  ✓  Member repos — 187 across 24 members
+  ✓  Org repos — 31 total  (28 public · 3 private)
+  ✓  Stale branches — 8 found  (>180 days inactive)
+  ✓  Security audit — 12 finding(s)  (2 Critical  4 High)
+
+╭────────────────────────── Security Findings — acme-corp ─────────────╮
+│  #  │ Repo                │ Check                   │ Severity │      │
+├─────┼─────────────────────┼─────────────────────────┼──────────┤      │
+│  1  │ — org-level         │ Member without 2FA      │ Critical │      │
+│  2  │ api-service         │ No Branch Protection    │ High     │      │
+│  3  │ infra-scripts       │ Potentially Sensitive   │ Medium   │      │
+│  4  │ legacy-app          │ No Description          │ Low      │      │
+╰─────────────────────────────────────────────────────────────────────╯
+
+──────────────────── Recon Summary ─────────────────────────────────────
+
+  ┌──────────────────┬─────────┬──────────────┬───────────┬───────────┬──────────┐
+  │ Org              │ Members │ Member Repos │ Org Repos │ Stale Br. │ Findings │
+  ├──────────────────┼─────────┼──────────────┼───────────┼───────────┼──────────┤
+  │ acme-corp        │      24 │          187 │        31 │         8 │       12 │
+  │ devops-team      │      11 │           64 │        19 │         3 │        6 │
+  └──────────────────┴─────────┴──────────────┴───────────┴───────────┴──────────┘
+
+╔══════════════════════════════════════════════════════════════════════╗
+║  ✓ Complete  ·  Orgs: 2  ·  Members: 35  ·  Findings: 18           ║
+║  Member Repos: 251  ·  Org Repos: 50  ·  Runtime: 2m 14s           ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+  ✓  Report → github_recon_out/github_recon_2025-06-01T14-30.xlsx
+```
+
+---
+
+## 🎛️ CLI Reference
+
+### All flags at a glance
+
+```bash
+python gitrecon.py [--orgs ORG [ORG ...]]
+                   [--include-forks] [--members-only]
+                   [--since YYYY-MM-DD] [--stale-days N]
+                   [--security]
+                   [--outdir DIR] [--output-format xlsx|csv|json] [--no-export]
+                   [--workers N] [--timeout N] [--quiet] [-v]
+```
 
 ### Targets
 
 | Flag | Description |
 |------|-------------|
-| `--orgs / -o ORG [ORG ...]` | One or more org logins to scan. **Omit entirely** to auto-discover all orgs for the authenticated user. |
+| `--orgs acme devops` | Scan specific org(s). **Omit entirely** to auto-discover all your orgs. |
 
 ### Scope
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--include-forks` | off | Include forked repositories in member repo results |
-| `--members-only` | off | Fetch the member list only — skip repo enumeration, branch checks, and security audit |
-| `--since YYYY-MM-DD` | none | Only return member repos pushed on or after this date |
-| `--stale-days N` | `180` | Number of days of inactivity before a branch is considered stale |
-| `--security` | off | Run the full security audit. Always enabled when `--orgs` is omitted. |
+| `--include-forks` | off | Include forked repos in member results |
+| `--members-only` | off | Members list only — skip repos, branches, and security audit |
+| `--since 2024-01-01` | none | Only member repos pushed on or after this date |
+| `--stale-days 90` | `180` | Days of inactivity before a branch is flagged stale |
+| `--security` | off | Force security audit when using `--orgs` (always on in auto mode) |
 
 ### Output
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--outdir DIR` | `github_recon_out` | Directory where the report file is written |
-| `--output-format` | `xlsx` | Export format: `xlsx`, `csv`, or `json` |
-| `--no-export` | off | Terminal output only — no files written to disk |
+| `--outdir DIR` | `github_recon_out` | Directory to write the report file |
+| `--output-format` | `xlsx` | `xlsx` · `csv` · `json` |
+| `--no-export` | off | Terminal output only — no files written |
 
 ### Behaviour
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--workers N` | `8` | Number of concurrent threads for repo and branch fetching |
-| `--timeout N` | `30` | HTTP timeout per API request in seconds |
-| `--quiet` | off | Suppress the ASCII art banner (useful in CI pipelines) |
-| `-v / --verbose` | off | Enable debug-level logging to stderr |
-| `--version` | — | Print the version number and exit |
+| `--workers N` | `8` | Concurrent threads for repo and branch fetching |
+| `--timeout N` | `30` | HTTP timeout per API request (seconds) |
+| `--quiet` | off | Suppress the ASCII art banner |
+| `-v` | off | Debug logging to stderr |
 
 ---
 
-## Features in Detail
+## 🔐 Security Audit — All 9 Checks
 
-### Organisation Member Enumeration
+| # | Check | Severity | What it catches |
+|---|-------|----------|-----------------|
+| 1 | **Member without 2FA** | 🔴 Critical | Any member with two-factor auth disabled |
+| 2 | **No Branch Protection** | 🟠 High | Default branch allows force-push and direct commits |
+| 3 | **Dependabot Alerts Disabled** | 🟠 High | Dependency CVE alerting is switched off |
+| 4 | **Potentially Sensitive Public Repo** | 🟡 Medium | Public repo name contains words like `infra`, `prod`, `credentials`, `deploy` |
+| 5 | **High Admin-to-Member Ratio** | 🟡 Medium | More than 50% of members are admins |
+| 6 | **No License** | 🟡 Medium | No LICENSE file — legal use of the code is undefined |
+| 7 | **No Description** | 🟢 Low | Repo ownership and purpose are unclear |
+| 8 | **No Topics** | 🟢 Low | Public repo is unclassified and hard to discover |
+| 9 | **Archived Repo with Open Issues** | 🟢 Low | Repo is frozen but issues are still open |
 
-GitRecon fetches every member of the target org(s) — both admins and regular members — with a full profile pull for each:
-
-- GitHub login and display name
-- Email address (if public)
-- Company and location
-- Number of public repos and followers
-- Account creation date
-- Admin vs member role
-
-Member profiles are **cached in memory**, so if a user belongs to multiple orgs their profile is only fetched once, not once per org.
-
----
-
-### Member Personal Repos
-
-For each member, GitRecon enumerates all public repositories in their **personal namespace** (not org-owned). Results include:
-
-- Repository name and URL
-- Primary language
-- Star and fork counts
-- Last push date and creation date
-- Whether the repo is a fork or archived
-
-Fetching is done **concurrently** using a thread pool — all members in an org are queried in parallel, cutting total runtime by 5–8× compared to serial requests.
-
-Use `--since YYYY-MM-DD` to filter to recently active repos. Use `--include-forks` to include forked repos (excluded by default to keep results focused on original work).
+> 🔑 The **2FA check** requires `admin:org` scope. Without it, an `Info` note is written instead.
+> Run `gh auth refresh -s admin:org` to enable it.
 
 ---
 
-### Organisation Repos
+## 💾 Excel Report — 6 Sheets
 
-Separately from member repos, GitRecon also lists every repository owned by **the organisation itself** — both public and private:
+Every run creates a **timestamped Excel file** so old results are never overwritten:
 
-- Visibility (Public / Private)
-- Language, stars, forks, and open issue count
-- Default branch name
-- Topics
-- Last push date and creation date
-- Archived and fork flags
-
-This is a distinct data set from member repos. An org repo is owned by the org entity; a member repo is owned by an individual's GitHub account.
-
----
-
-### Stale Branch Detection
-
-For every org repo, GitRecon checks every branch and compares the last commit date against the current date. A branch is **stale** if it has had no commit activity for more than `--stale-days` days (default 180).
-
-The Stale Branches sheet in the report includes:
-
-| Column | Description |
-|--------|-------------|
-| Org | Organisation name |
-| Repo | Repository the branch belongs to |
-| Branch | Branch name |
-| Last Commit | ISO date of the most recent commit |
-| Days Inactive | How many days since the last commit |
-| Last Author | Name of the last person who committed |
-| Commit SHA | Abbreviated SHA of the last commit |
-| Repo URL | Direct link to the repository |
-
-Rows in the Excel report are colour-coded: **red** for branches inactive more than 365 days, **amber** for 181–365 days.
-
-Branches are checked concurrently per repository, so even orgs with dozens of repos and hundreds of branches complete in a reasonable time.
-
----
-
-### Security Audit
-
-The security audit runs 9 checks and produces findings sorted by severity (Critical → High → Medium → Low → Info):
-
-| Check | Severity | What it looks for |
-|-------|----------|-------------------|
-| **Member without 2FA** | Critical | Members with two-factor authentication disabled (requires `admin:org` scope) |
-| **No Branch Protection** | High | Default branch has no protection rules — force-push and direct commits to main are allowed |
-| **Dependabot Alerts Disabled** | High | Dependency vulnerability alerting is turned off on the repo |
-| **No License** | Medium | No LICENSE file present — legal use of the code is undefined |
-| **Potentially Sensitive Public Repo** | Medium | Public repo name contains keywords like `infra`, `deploy`, `prod`, `credentials`, `staging`, etc. |
-| **High Admin-to-Member Ratio** | Medium | More than 50% of members are admins — increases blast radius of a compromised account |
-| **No Description** | Low | Repo has no description — ownership and purpose are unclear |
-| **No Topics** | Low | Public repo has no topics — difficult to classify or discover |
-| **Archived Repo with Open Issues** | Low | Repo is archived but still has open issues that contributors cannot resolve |
-
-Findings are printed as a colour-coded terminal table after each org scan and written to the **Security Audit** sheet in the Excel report.
-
-The audit **automatically runs** in [no-args auto mode](#no-args-auto-mode). Pass `--security` to force it when targeting specific orgs with `--orgs`.
-
----
-
-### No-Args Auto Mode
-
-Running `python gitrecon.py` with no arguments triggers **auto mode**:
-
-1. GitRecon calls `/user/orgs` to discover every organisation the authenticated user belongs to.
-2. It scans **all of them** — members, member repos, org repos, stale branches, and security audit.
-3. A summary table is printed at the end covering all orgs combined.
-
-This is the fastest way to get a complete picture of your entire GitHub presence.
-
-```bash
-python gitrecon.py
 ```
-
-If no organisations are found, a clear error is shown alongside the command to refresh the required scope.
-
----
-
-## Output and Exports
-
-### Excel Report
-
-The default output is a single `.xlsx` file written to `github_recon_out/`. The filename is timestamped: `github_recon_2025-06-01T14-30.xlsx`.
-
-The workbook has **6 sheets**:
+github_recon_out/github_recon_2025-06-01T14-30.xlsx
+```
 
 | Sheet | Contents |
 |-------|----------|
-| **Summary** | One row per org — member count, repo counts, stale branch count, finding counts, elapsed time |
-| **Members** | Deduplicated member list across all scanned orgs with full profile data |
-| **Member Repos** | All personal repos of all members (deduplicated, personal namespace only) |
-| **Org Repos** | All repos owned by the org(s) — public and private |
-| **Stale Branches** | All branches inactive beyond the stale threshold, sorted by staleness descending |
-| **Security Audit** | All security findings sorted by severity |
+| 📋 **Summary** | One row per org — member count, repo counts, stale branch count, findings, elapsed time |
+| 👤 **Members** | Full deduplicated member list — login, name, role, email, company, location, followers |
+| 📦 **Member Repos** | All personal repos for all members — language, stars, forks, last push |
+| 🏢 **Org Repos** | Every org repo — visibility, language, stars, forks, issues, default branch, topics |
+| 🌿 **Stale Branches** | All stale branches — repo, days inactive, last author, commit SHA |
+| 🔐 **Security Audit** | All findings — org, repo, check name, severity, detail |
 
-All sheets include:
-
-- Dark blue header row with white bold text
-- Freeze panes on row 1 so headers stay visible when scrolling
-- Auto-filter enabled on all columns so you can sort and filter without leaving Excel
-- Per-row colour coding relevant to the sheet (red/amber staleness on Stale Branches; red/amber/blue/green severity on Security Audit; grey for archived repos on Org Repos)
-- Calibrated column widths to avoid truncation
-
-### CSV Export
-
-Pass `--output-format csv` to produce six separate `.csv` files in the output directory — one per sheet.
-
-```bash
-python gitrecon.py --orgs acme-corp --output-format csv
-```
-
-Files produced:
-```
-github_recon_out/
-  github_recon_<timestamp>_summary.csv
-  github_recon_<timestamp>_members.csv
-  github_recon_<timestamp>_member_repos.csv
-  github_recon_<timestamp>_org_repos.csv
-  github_recon_<timestamp>_stale_branches.csv
-  github_recon_<timestamp>_security.csv
-```
-
-### JSON Export
-
-Pass `--output-format json` to produce a single `.json` file with all six data sets as top-level keys.
-
-```bash
-python gitrecon.py --orgs acme-corp --output-format json
-```
-
-Output structure:
-
-```json
-{
-  "generated": "2025-06-01T14:30:00+00:00",
-  "summary": [ ... ],
-  "members": [ ... ],
-  "member_repos": [ ... ],
-  "org_repos": [ ... ],
-  "stale_branches": [ ... ],
-  "security_findings": [ ... ]
-}
-```
+All sheets have **dark blue headers**, **freeze panes**, **auto-filter**, and **colour-coded rows**.
 
 ---
 
-## Token Scopes Reference
+## 🌈 Colour Guide
 
-| Scope | Required for |
-|-------|-------------|
-| `read:org` | Listing private members. Without this, only public members are returned and the member count will be incomplete. |
-| `admin:org` | 2FA check — without this the 2FA finding is skipped and an Info note is written in the Security Audit sheet instead. |
-| `security_events` | Dependabot vulnerability alert status check on each repo. |
+### Terminal
 
-**Check your current scopes:**
+| Colour | Meaning |
+|--------|---------|
+| 🟢 **Bright Green** | Pass / found / active / success |
+| 🟡 **Yellow** | Warning / admin role / weak |
+| 🔴 **Red** | Critical / fail / high severity |
+| 🔵 **Bright Cyan** | Labels, counts, section headers |
+| ⬜ **Dim White** | Secondary info / not applicable |
 
-```bash
-gh auth status
-```
+### Excel — Security Audit Sheet
 
-**Add missing scopes:**
+| Row colour | Severity |
+|------------|---------|
+| 🔴 Red tint | Critical |
+| 🟡 Amber tint | High |
+| 🔵 Blue tint | Medium |
+| 🟢 Green tint | Low |
+| ⬜ Grey | Info |
 
-```bash
-gh auth refresh -s read:org,admin:org,security_events
-```
+### Excel — Stale Branches Sheet
 
-When using a Personal Access Token, select the scopes above when generating the token at **GitHub → Settings → Developer settings → Personal access tokens**.
+| Row colour | Staleness |
+|------------|-----------|
+| 🔴 Red tint | Inactive > 365 days |
+| 🟡 Amber tint | Inactive 181–365 days |
 
 ---
 
-## Usage Examples
+## 💡 Usage Examples
 
 ```bash
-# Full audit of everything your account can see (no-args mode)
+# Full auto-audit — discover all orgs + security audit (no flags needed)
 python gitrecon.py
 
 # Scan a single org
@@ -411,80 +427,183 @@ python gitrecon.py --orgs acme-corp
 # Scan multiple orgs in one run
 python gitrecon.py --orgs acme-corp devops-team infra-team
 
-# Run with security audit on named orgs
+# Security audit on named orgs
 python gitrecon.py --orgs acme-corp --security
 
-# Adjust the stale branch threshold to 90 days
+# Adjust stale branch threshold to 90 days
 python gitrecon.py --orgs acme-corp --stale-days 90
 
-# Only show repos pushed since 1 Jan 2024
+# Only repos pushed since 1 Jan 2024
 python gitrecon.py --orgs acme-corp --since 2024-01-01
 
 # Include forked repos in member results
 python gitrecon.py --orgs acme-corp --include-forks
 
-# Members list only — no repos, no branches, no audit
+# Members list only — fastest mode, no repos or branches
 python gitrecon.py --orgs acme-corp --members-only
 
-# Export as JSON
+# Export as JSON for pipeline integration
 python gitrecon.py --orgs acme-corp --output-format json
 
 # Export as CSV files
 python gitrecon.py --orgs acme-corp --output-format csv
 
-# Write report to a custom directory
-python gitrecon.py --orgs acme-corp --outdir /tmp/audit-results
-
-# Terminal output only — no files written
+# Terminal only — no files written
 python gitrecon.py --orgs acme-corp --no-export
 
-# CI-friendly — suppress banner, token from env, JSON output
-GITHUB_TOKEN=ghp_xxx python gitrecon.py --orgs acme-corp --output-format json --quiet
+# CI pipeline — quiet mode, token from env
+GITHUB_TOKEN=ghp_xxx python gitrecon.py --orgs acme-corp --quiet --output-format json
 
-# Increase parallel workers for large orgs
+# Boost workers for large orgs
 python gitrecon.py --orgs acme-corp --workers 16
 
-# Debug mode — print all API calls and errors to stderr
+# Debug mode
 python gitrecon.py --orgs acme-corp -v
 ```
 
 ---
 
-## Performance
+## 🔑 Token Scopes
 
-GitRecon uses `concurrent.futures.ThreadPoolExecutor` for the two most API-intensive steps:
+| Scope | Required for |
+|-------|-------------|
+| `read:org` | Private member listing — without this only public members are returned |
+| `admin:org` | 2FA check — without this the check is skipped |
+| `security_events` | Dependabot alert status check |
 
-**Member repo fetching** — all members in an org are queried in parallel. For an org with 50 members this reduces the repo-fetch phase from ~50 serial API calls to roughly 6–7 parallel batches at the default `--workers 8`, cutting that phase down to roughly one-eighth of the serial time.
+```bash
+# Check current scopes
+gh auth status
 
-**Stale branch checking** — all org repos are checked in parallel. Each branch requires a commit-detail API call, so concurrency here makes a significant difference on orgs with many repos.
-
-The default `--workers 8` is conservative and stays well within GitHub's rate limit. For large organisations you can safely raise it to `--workers 16` or `--workers 20`.
-
-**Rate limits** are handled automatically. If the API returns a `429` or a rate-limit `403`, GitRecon reads the `X-RateLimit-Reset` header and sleeps until the window resets before retrying. Network errors retry with exponential back-off (2s → 4s → 8s → up to 60s maximum).
-
-A pre-flight rate limit check is displayed at startup, showing remaining calls and the exact reset time. If fewer than 100 calls remain, a warning is printed before scanning begins so you can decide whether to proceed or wait.
+# Add all required scopes
+gh auth refresh -s read:org,admin:org,security_events
+```
 
 ---
 
-## Troubleshooting
+## 📁 Project Structure
 
-**`No organisations found for this account`**
-Your token is missing `read:org` scope. Run `gh auth refresh -s read:org` and try again.
+```
+gitrecon/
+│
+├── 🐍  gitrecon.py        ← Main script (single file, zero config)
+├── 📦  requirements.txt   ← Python dependencies
+└── 📖  README.md          ← You are here
+```
 
-**`Auth failed (401)`**
-The token is invalid or expired. Run `gh auth login` or set a fresh `GITHUB_TOKEN` environment variable.
+---
 
-**`2FA check skipped` in the Security Audit sheet**
-This is expected when your token has `read:org` but not `admin:org`. Run `gh auth refresh -s admin:org` to enable the 2FA check.
+## 📜 Changelog
 
-**Stale branch detection is slow**
-Each branch requires one extra API call for commit detail. For orgs with many large repos, raise `--workers` to `16` or higher to parallelise more aggressively, or use `--stale-days` with a smaller value to limit which branches are checked.
+| Version | What changed |
+|---------|-------------|
+| **4.0** | 🔐 Security audit (9 checks) · 🌿 Stale branch detection · 🏢 Org repos sheet · 🔑 2FA check · 🤖 Dependabot check |
+| **3.0** | ⚡ Concurrent repo fetching · 🔑 GITHUB_TOKEN env var support · 🛡️ Profile caching |
+| **2.0** | 📊 Excel export with 6 sheets · 🗂️ CSV and JSON output · 🌿 Member personal repos |
+| **1.0** | 🚀 Initial release — member listing and org discovery |
 
-**Member repos not showing**
-If `--include-forks` is not set, forked repos are excluded by default. Also verify that `--since` is not filtering out repos that were last pushed before your chosen date.
+---
 
-**The Excel file opens but the sheets are empty**
-This can happen if `pandas` or `openpyxl` is outdated. Run `pip install --upgrade pandas openpyxl` and retry.
+## 🛠️ Troubleshooting
 
-**`gh auth token timed out`**
-The GitHub CLI took more than 10 seconds to respond. Try running `gh auth status` manually, or switch to the `GITHUB_TOKEN` environment variable approach instead.
+<details>
+<summary>❌ &nbsp;<strong>gh CLI not found</strong></summary>
+<br>
+
+Install the GitHub CLI from [cli.github.com](https://cli.github.com) then run `gh auth login`.
+
+```bash
+brew install gh      # macOS
+sudo apt install gh  # Ubuntu
+```
+
+Or skip the CLI entirely by setting `GITHUB_TOKEN` as an environment variable.
+
+</details>
+
+<details>
+<summary>❌ &nbsp;<strong>No organisations found for this account</strong></summary>
+<br>
+
+Your token is missing `read:org` scope.
+
+```bash
+gh auth refresh -s read:org
+```
+
+Then re-run GitRecon.
+
+</details>
+
+<details>
+<summary>❌ &nbsp;<strong>Auth failed (401)</strong></summary>
+<br>
+
+The token is invalid or expired.
+
+```bash
+gh auth login     # re-authenticate via CLI
+# or
+export GITHUB_TOKEN=ghp_<new-token>
+```
+
+</details>
+
+<details>
+<summary>🔍 &nbsp;<strong>2FA check skipped in Security Audit</strong></summary>
+<br>
+
+Normal — your token has `read:org` but not `admin:org`. Add the scope:
+
+```bash
+gh auth refresh -s admin:org
+```
+
+</details>
+
+<details>
+<summary>⏳ &nbsp;<strong>Script pauses with "Rate limit — sleeping Xs"</strong></summary>
+<br>
+
+Completely normal for large orgs. GitHub allows **5,000 API requests/hour** for authenticated users. GitRecon reads the reset time from the `X-RateLimit-Reset` header and waits automatically — no action needed.
+
+</details>
+
+<details>
+<summary>🐌 &nbsp;<strong>Stale branch check is very slow</strong></summary>
+<br>
+
+Each branch requires one commit-detail API call. For orgs with many repos, raise `--workers`:
+
+```bash
+python gitrecon.py --orgs acme-corp --workers 16
+```
+
+</details>
+
+<details>
+<summary>❌ &nbsp;<strong>ModuleNotFoundError</strong></summary>
+<br>
+
+```bash
+pip install -r requirements.txt
+
+# If a specific package is still missing
+pip install rich requests pandas openpyxl
+```
+
+</details>
+
+---
+
+<div align="center">
+
+---
+
+*Made with &nbsp;🐍 Python &nbsp;·&nbsp; 🎨 Rich &nbsp;·&nbsp; 🐙 GitHub REST API v3*
+
+**Author: Saurabh Jain &nbsp;·&nbsp; v4.0**
+
+---
+
+</div>
